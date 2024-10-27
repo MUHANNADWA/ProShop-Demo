@@ -1,30 +1,17 @@
-import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
 import { Col, Row, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
 
 const ProductScreen = () => {
 
-    const [product, setProduct] = useState([]);
     const { id: productId } = useParams();
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const response = await fetch(`http://localhost:5000/products/${productId}`);
-            if (!response.ok) {
-                throw Error(`${response.statusText} : ${response.status}`)
-            }
-            return await response.json();
-        }
-        fetchProducts().then((data) => {
-            setProduct(data); console.log(data);
-        }).catch((error) => alert(error));
-    }, [productId]);
-
+    const { data: product, isLoading, error } = useGetProductDetailsQuery(productId);
 
     return (
         <>
             <Link className='btn btn-light my-3' to='/'>Go Back</Link>
-            <Row>
+            {isLoading ? (<div>Loading...</div>) : error ? (<div>{error?.data.message || error.error}</div>) : (<Row>
                 <Col md='4'>
                     <Image src={product.image} alt={product.name} fluid />
                 </Col>
@@ -75,7 +62,7 @@ const ProductScreen = () => {
                         </ListGroup>
                     </Card>
                 </Col>
-            </Row>
+            </Row>)}
         </>
     )
 }
