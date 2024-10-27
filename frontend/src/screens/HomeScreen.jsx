@@ -1,7 +1,27 @@
+import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import products from "../products.js";
 import Product from "../components/Product.jsx";
+
 const HomeScreen = () => {
+
+    const [products, setProducts] = useState([]);
+
+    const fetchProducts = async () => {
+
+        const response = await fetch('http://localhost:5000/products',);
+        if (!response.ok) {
+            throw Error(`${response.statusText} : ${response.status}`)
+        }
+        return await response.json();
+    }
+    
+    useEffect(() => {
+        fetchProducts().then((data)=>{ setProducts(data); console.log(data);
+        }).catch((error) => alert(error));
+    }, []);
+
+
+
     return (
         <>
             <h1>Latest Products</h1>

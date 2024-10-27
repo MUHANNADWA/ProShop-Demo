@@ -1,11 +1,26 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import products from "../products";
 import { Col, Row, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
 
 const ProductScreen = () => {
+
+    const [product, setProduct] = useState([]);
     const { id: productId } = useParams();
-    const product = products.find((p) => p._id === productId)
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const response = await fetch(`http://localhost:5000/products/${productId}`);
+            if (!response.ok) {
+                throw Error(`${response.statusText} : ${response.status}`)
+            }
+            return await response.json();
+        }
+        fetchProducts().then((data) => {
+            setProduct(data); console.log(data);
+        }).catch((error) => alert(error));
+    }, [productId]);
+
+
     return (
         <>
             <Link className='btn btn-light my-3' to='/'>Go Back</Link>
@@ -25,7 +40,7 @@ const ProductScreen = () => {
                             Price: ${product.price}
                         </ListGroup.Item>
                         <ListGroup.Item>
-                            Desreption: {product.description}
+                            Descreption: {product.description}
                         </ListGroup.Item>
                     </ListGroup>
                 </Col>
