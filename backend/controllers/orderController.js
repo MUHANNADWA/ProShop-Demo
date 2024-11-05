@@ -1,4 +1,4 @@
-import orderModel from "../models/orderModel.js";
+import Order from "../models/orderModel.js";
 import asyncHandler from '../middleware/asyncHandler.js';
 
 
@@ -20,7 +20,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('No order items');
     } else {
-        const order = new orderModel({
+        const order = new Order({
             orderItems: orderItems.map((x) => ({
                 ...x,
                 product: x._id,
@@ -45,7 +45,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/myorders
 // @access  Private
 const getMyOrders = asyncHandler(async (req, res) => {
-    const orders = await orderModel.find({ user: req.user._id });
+    const orders = await Order.find({ user: req.user._id });
     res.json(orders);
 });
 
@@ -53,7 +53,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/:id
 // @access  Private
 const getOrderById = asyncHandler(async (req, res) => {
-    const order = await orderModel.findById(req.params.id).populate(
+    const order = await Order.findById(req.params.id).populate(
         'user',
         'name email'
     );
@@ -67,14 +67,34 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 // @desc    Update order to paid
-// @route   GET /api/orders/:id/pay
+// @route   PUT /api/orders/:id/pay
 // @access  Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-    res.send('update order to paid');
+    const updateOrderToPaid = asyncHandler(async (req, res) => {
+        const order = await Order.findById(req.params.id);
+
+        if (order) {
+            order.isPaid = true;
+            order.paidAt = Date.now();
+            order.paymentResult = {
+                id: req.body.id,
+                status: req.body.status,
+                update_time: req.body.update_time,
+                email_address: req.body.payer.email_address,
+            };
+
+            const updatedOrder = await order.save();
+
+            res.json(updatedOrder);
+        } else {
+            res.status(404);
+            throw new Error('Order not found');
+        }
+    });
 });
 
 // @desc    Update order to delivered
-// @route   GET /api/orders/:id/deliver
+// @route   PUT /api/orders/:id/deliver
 // @access  Private/Admin
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
     res.send('update order to delivered');

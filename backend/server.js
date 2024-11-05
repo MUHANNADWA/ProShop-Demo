@@ -7,7 +7,7 @@ import productsRoutes from './routes/productsRoutes.js'
 import usersRoutes from './routes/usersRoutes.js'
 import ordersRoutes from './routes/ordersRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import { ORDERS_URL, PRODUCTS_URL, USERS_URL } from '../frontend/src/constants.js';
+import { ORDERS_URL, PAYPAL_URL, PRODUCTS_URL, USERS_URL } from '../frontend/src/constants.js';
 
 dotenv.config();
 connectDB();
@@ -27,6 +27,10 @@ app.use(cookieParser());
 app.use(PRODUCTS_URL, productsRoutes);
 app.use(USERS_URL, usersRoutes);
 app.use(ORDERS_URL, ordersRoutes);
+
+app.get(PAYPAL_URL, (req, res) =>
+    res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
+);
 
 app.get("/", (req, res) => {
     res.send("Running, Enter to <a href=http://localhost:5000/products>http://localhost:5000/products</a>");

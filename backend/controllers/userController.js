@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import userModel from "../models/userModel.js";
+import User from "../models/userModel.js";
 import asyncHandler from '../middleware/asyncHandler.js';
 import generateToken from '../utils/generateToken.js';
 
@@ -9,7 +9,7 @@ import generateToken from '../utils/generateToken.js';
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const user = await userModel.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
 
@@ -33,14 +33,14 @@ const authUser = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
     
-    const userExists = await userModel.findOne({ email });
+    const userExists = await User.findOne({ email });
 
     if (userExists) {
         res.status(400);
         throw new Error('User already exists');
     }
 
-    const user = await userModel.create({
+    const user = await User.create({
         name,
         email,
         password,
@@ -77,7 +77,7 @@ const logoutUser = (req, res) => {
 // @route   GET /users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-    const user = await userModel.findById(req.user._id);
+    const user = await User.findById(req.user._id);
 
     if (user) {
         res.json({
@@ -96,7 +96,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PUT /users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-    const user = await userModel.findById(req.user._id);
+    const user = await User.findById(req.user._id);
 
     if (user) {
         user.name = req.body.name || user.name;
@@ -125,7 +125,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
     try {
-        const users = await userModel.find();
+        const users = await User.find();
         res.status(200).send(users);
     } catch (error) {
         res.status(500).send(`Something went wrong ${error}`);
