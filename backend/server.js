@@ -1,13 +1,21 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import cors from 'cors'
-import cookieParser from 'cookie-parser';
-import connectDB from './config/db.js';
-import productsRoutes from './routes/productsRoutes.js'
-import usersRoutes from './routes/usersRoutes.js'
-import ordersRoutes from './routes/ordersRoutes.js';
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import { ORDERS_URL, PAYPAL_URL, PRODUCTS_URL, USERS_URL } from '../frontend/src/constants.js';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import path from "path";
+import connectDB from "./config/db.js";
+import productsRoutes from "./routes/productsRoutes.js";
+import usersRoutes from "./routes/usersRoutes.js";
+import ordersRoutes from "./routes/ordersRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import {
+    ORDERS_URL,
+    PAYPAL_URL,
+    PRODUCTS_URL,
+    USERS_URL,
+    UPLOAD_URL,
+} from "../frontend/src/constants.js";
 
 dotenv.config();
 connectDB();
@@ -27,15 +35,29 @@ app.use(cookieParser());
 app.use(PRODUCTS_URL, productsRoutes);
 app.use(USERS_URL, usersRoutes);
 app.use(ORDERS_URL, ordersRoutes);
+app.use(UPLOAD_URL, uploadRoutes);
+
+const __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 app.get(PAYPAL_URL, (req, res) =>
     res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
 
-app.get("/", (req, res) => {
-    res.send("Running, Enter to <a href=http://localhost:5000/products>http://localhost:5000/products</a>");
-})
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "/frontend/build")));
+
+    app.get("*", (req, res) =>
+        res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+    );
+} else {
+    app.get("/", (req, res) => {
+        res.send("API is running....");
+    });
+}
 
 app.use(notFound);
 app.use(errorHandler);
-app.listen(port, () => console.log(`Backend server is running on port ${port}`))
+app.listen(port, () =>
+    console.log(`Backend server is running on port ${port}`)
+);
