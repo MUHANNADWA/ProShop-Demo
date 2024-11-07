@@ -23,7 +23,9 @@ connectDB();
 const port = process.env.PORT;
 const app = express();
 
-app.use(cors({ credentials: true, origin: process.env.FRONTEND_URI }));
+app.use(
+  cors({ credentials: true, origin: process.env.FRONTEND_URI.split(",") })
+);
 
 // Body parser middleware
 app.use(express.json());
