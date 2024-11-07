@@ -1,15 +1,18 @@
 import { Col, Row } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Product from "../components/Product.jsx";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
 import Loader from "../components/Loader.jsx";
 import Message from "../components/Message.jsx";
 import Paginate from "../components/Paginate";
+import ProductCarousel from "../components/ProductCarousel";
+import Meta from "../components/Meta";
 
 const HomeScreen = () => {
-  const { pageNumber } = useParams();
+  const { pageNumber, keyword } = useParams();
 
   const { data, isLoading, error } = useGetProductsQuery({
+    keyword,
     pageNumber,
   });
 
@@ -23,7 +26,18 @@ const HomeScreen = () => {
         </Message>
       ) : (
         <>
-          <h1>Latest Products</h1>
+          {!keyword ? (
+            <>
+              <ProductCarousel />
+              <h1>Latest Products</h1>
+            </>
+          ) : (
+            <Link to="/" className="btn btn-light mb-2">
+              Go Back
+            </Link>
+          )}
+
+          <Meta />
           <Row>
             {data.products.map((product) => (
               <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
@@ -31,7 +45,11 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
-          <Paginate pages={data.pages} page={data.page} />
+          <Paginate
+            pages={data.pages}
+            page={data.page}
+            keyword={keyword ? keyword : ""}
+          />
         </>
       )}
     </>

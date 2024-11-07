@@ -20,6 +20,7 @@ import {
   useGetProductDetailsQuery,
   useCreateReviewMutation,
 } from "../slices/productsApiSlice";
+import Meta from "../components/Meta.jsx";
 
 const ProductScreen = () => {
   const dispatch = useDispatch();
@@ -73,14 +74,17 @@ const ProductScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error?.data.message || error.error}</Message>
+        <Message variant="danger">
+          {error?.data?.message || error.error}
+        </Message>
       ) : (
         <>
+          <Meta title={product.name} description={product.description} />
           <Row>
-            <Col md="4">
+            <Col md="5">
               <Image src={product.image} alt={product.name} fluid />
             </Col>
-            <Col md="5">
+            <Col md="4">
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h3>{product.name}</h3>
