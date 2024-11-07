@@ -7,7 +7,8 @@ import { FaSearch } from "react-icons/fa";
 const SearchBox = () => {
   const navigate = useNavigate();
   const { keyword: urlKeyword } = useParams();
-  const [keyword, setKeyword] = useState(urlKeyword);
+  const [keyword, setKeyword] = useState(urlKeyword || '');
+
 
   const submitHandler = (e) => {
     e.preventDefault();
