@@ -10,11 +10,11 @@ import ordersRoutes from "./routes/ordersRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import {
-    ORDERS_URL,
-    PAYPAL_URL,
-    PRODUCTS_URL,
-    USERS_URL,
-    UPLOAD_URL,
+  ORDERS_URL,
+  PAYPAL_URL,
+  PRODUCTS_URL,
+  USERS_URL,
+  UPLOAD_URL,
 } from "../frontend/src/constants.js";
 
 dotenv.config();
@@ -41,23 +41,23 @@ const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 app.get(PAYPAL_URL, (req, res) =>
-    res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
 
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "/frontend/build")));
+  app.use(express.static(path.join(__dirname, "/frontend/build")));
 
-    app.get("*", (req, res) =>
-        res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
-    );
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+  );
 } else {
-    app.get("/", (req, res) => {
-        res.send("API is running....");
-    });
+  app.get("/", (req, res) => {
+    res.send("API is running....");
+  });
 }
 
 app.use(notFound);
 app.use(errorHandler);
 app.listen(port, () =>
-    console.log(`Backend server is running on port ${port}`)
+  console.log(`Backend server is running on port ${port}`)
 );

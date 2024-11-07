@@ -1,10 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Route,
-    RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
@@ -31,55 +31,46 @@ import ProductEditScreen from "./screens/admin/ProductEditScreen";
 import UserEditScreen from "./screens/admin/UserEditScreen";
 
 const router = createBrowserRouter(
-    createRoutesFromElements(
-        <Route path="/" element={<App />}>
-            <Route index={true} path="/" element={<HomeScreen />} />
-            <Route path="/page/:pageNumber" element={<HomeScreen />} />
-            <Route path="/product/:id" element={<ProductScreen />} />
-            <Route path="/login" element={<LoginScreen />} />
-            <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/cart" element={<CartScreen />} />
-            <Route path="" element={<PrivateRoute />}>
-                <Route path="/shipping" element={<ShippingScreen />} />
-                <Route path="/payment" element={<PaymentScreen />} />
-                <Route path="/placeorder" element={<PlaceOrderScreen />} />
-                <Route path="/orders/:id" element={<OrderScreen />} />
-                <Route path="/profile" element={<ProfileScreen />} />
-            </Route>
-            <Route path="" element={<AdminRoute />}>
-                <Route
-                    path="/admin/productslist"
-                    element={<ProductsListScreen />}
-                />
-                <Route
-                    path="/admin/productslist/:pageNumber"
-                    element={<ProductsListScreen />}
-                />
-                <Route path="/admin/userslist" element={<UsersListScreen />} />
-                <Route
-                    path="/admin/orderslist"
-                    element={<OrdersListScreen />}
-                />
-                <Route
-                    path="/admin/products/:id/edit"
-                    element={<ProductEditScreen />}
-                />
-                <Route
-                    path="/admin/users/:id/edit"
-                    element={<UserEditScreen />}
-                />
-            </Route>
-            ;
-        </Route>
-    )
+  createRoutesFromElements(
+    <Route path="/" element={<App />}>
+      <Route index={true} path="/" element={<HomeScreen />} />
+      <Route path="/page/:pageNumber" element={<HomeScreen />} />
+      <Route path="/product/:id" element={<ProductScreen />} />
+      <Route path="/login" element={<LoginScreen />} />
+      <Route path="/register" element={<RegisterScreen />} />
+      <Route path="/cart" element={<CartScreen />} />
+      <Route path="" element={<PrivateRoute />}>
+        <Route path="/shipping" element={<ShippingScreen />} />
+        <Route path="/payment" element={<PaymentScreen />} />
+        <Route path="/placeorder" element={<PlaceOrderScreen />} />
+        <Route path="/orders/:id" element={<OrderScreen />} />
+        <Route path="/profile" element={<ProfileScreen />} />
+      </Route>
+      <Route path="" element={<AdminRoute />}>
+        <Route path="/admin/productslist" element={<ProductsListScreen />} />
+        <Route
+          path="/admin/productslist/:pageNumber"
+          element={<ProductsListScreen />}
+        />
+        <Route path="/admin/userslist" element={<UsersListScreen />} />
+        <Route path="/admin/orderslist" element={<OrdersListScreen />} />
+        <Route
+          path="/admin/products/:id/edit"
+          element={<ProductEditScreen />}
+        />
+        <Route path="/admin/users/:id/edit" element={<UserEditScreen />} />
+      </Route>
+      ;
+    </Route>
+  )
 );
 
 createRoot(document.getElementById("root")).render(
-    <StrictMode>
-        <Provider store={store}>
-            <PayPalScriptProvider deferLoading={true}>
-                <RouterProvider router={router} />
-            </PayPalScriptProvider>
-        </Provider>
-    </StrictMode>
+  <StrictMode>
+    <Provider store={store}>
+      <PayPalScriptProvider deferLoading={true}>
+        <RouterProvider router={router} />
+      </PayPalScriptProvider>
+    </Provider>
+  </StrictMode>
 );
