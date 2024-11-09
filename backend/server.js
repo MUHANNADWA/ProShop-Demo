@@ -24,7 +24,7 @@ const port = process.env.PORT;
 const app = express();
 
 app.use(
-  cors({ credentials: true, origin: process.env.FRONTEND_URI.split(",") })
+  cors({ credentials: true, origin: process.env.FRONTEND_URI })
 );
 
 // Body parser middleware
